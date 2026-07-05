@@ -18,11 +18,17 @@ https://github.com/user-attachments/assets/58540901-7d41-4713-a2cb-20639c74bea4
 Space Attach Research & Tactic Analysis (SPARTA) - Reconnaissance:
 
 Gather Spacecraft Design Information (REC-0001).
+
 Gather Spacecraft Descriptors (REC-0002).
+
 Gather Spacecraft Communications Information (REC-0003).
+
 Gather Launch Information (REC-0004).
+
 Monitor for Safe-Mode Indicators (REC-0007).
+
 Gather Mission Information (REC-0009).
+
 
 LEGAL NOTICE
 ------------
