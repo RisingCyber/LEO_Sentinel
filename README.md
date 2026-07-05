@@ -47,3 +47,8 @@ USAGE
 
     Example:
         python3 leo_sentinel.py --format both --summary
+
+SOME FEATURES AND DATABASES HAS BEEN REMOVED
+---------------------------------------------
+<img width="1770" height="741" alt="CSV" src="https://github.com/user-attachments/assets/024ddb36-770c-41d9-820a-5c58b1da9803" />
+
