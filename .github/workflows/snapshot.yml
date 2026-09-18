@@ -1,0 +1,48 @@
+name: Snapshot (optional)
+
+# Runs a real collection against CelesTrak and publishes the CSV/JSON as a
+# downloadable build artifact. Manual trigger by default; the weekly
+# schedule is commented out — uncomment it once you've confirmed a manual
+# run succeeds from Actions (GitHub-hosted runners egress from different
+# IP ranges than a personal machine, so verify once before relying on it).
+#
+# This workflow never commits anything back to the repository — it only
+# uploads an artifact attached to the workflow run.
+#
+# Optional Space-Track.org credentials: set the SPACETRACK_USER and
+# SPACETRACK_PASS repository secrets to enable that supplemental source.
+# Left unset, the tool silently uses CelesTrak only (this is the documented,
+# intended behavior — see leo_sentinel.py's own environment-variable check).
+
+on:
+  workflow_dispatch: {}
+  # schedule:
+  #   - cron: "0 6 * * 1"  # every Monday at 06:00 UTC
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run LEO Sentinel
+        env:
+          SPACETRACK_USER: ${{ secrets.SPACETRACK_USER }}
+          SPACETRACK_PASS: ${{ secrets.SPACETRACK_PASS }}
+        run: python leo_sentinel.py --format both --summary --verbose
+
+      - name: Upload snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: leo-snapshot-${{ github.run_id }}
+          path: |
+            leo_data/leo_satellites.csv
+            leo_data/leo_satellites.json
+          retention-days: 30
