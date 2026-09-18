@@ -1,8 +1,6 @@
 # LEO Sentinel
 
-**Australian Phoenix LEO Sentinel** — a LEO satellite aggregator and mission
-classifier for signals and space-security research, built for the
-reconnaissance stage of the [SPARTA](https://sparta.aerospace.org) space
+A LEO satellite aggregator and mission classifier for signals and space-security research, built for the reconnaissance stage of the [SPARTA](https://sparta.aerospace.org) space
 cybersecurity framework.
 
 [![CI](https://github.com/RisingCyber/LEO_Sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/RisingCyber/LEO_Sentinel/actions/workflows/ci.yml)
