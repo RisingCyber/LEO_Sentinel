@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "leo-sentinel"
+version = "1.2.0"
+description = "LEO satellite aggregator & classifier for signals/space security research"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Australian Phoenix CyberOps" }]
+requires-python = ">=3.8"
+dependencies = ["requests>=2.31.0"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/RisingCyber/LEO_Sentinel"
+Issues = "https://github.com/RisingCyber/LEO_Sentinel/issues"
+
+[project.scripts]
+leo-sentinel = "leo_sentinel:main"
+
+[tool.setuptools]
+py-modules = ["leo_sentinel"]
