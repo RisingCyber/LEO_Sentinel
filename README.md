@@ -74,7 +74,7 @@ pip install -r requirements.txt
 python3 leo_sentinel.py --format both --summary
 ```
 
-Output lands in `./leo_data/` — `leo_satellites.csv`, `leo_satellites.json`,
+Output lands in `./leo_data/` - `leo_satellites.csv`, `leo_satellites.json`,
 plus a run log.
 
 ## Installation
