@@ -13,8 +13,6 @@ mission type and operator, and outputs structured data for SDR-based
 security research.
 
 
-https://github.com/user-attachments/assets/58540901-7d41-4713-a2cb-20639c74bea4
-
 Space Attach Research & Tactic Analysis (SPARTA) - Reconnaissance:
 
 Gather Spacecraft Design Information (REC-0001).
