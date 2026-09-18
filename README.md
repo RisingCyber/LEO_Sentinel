@@ -259,7 +259,7 @@ items above. Please run `pytest -v` before submitting a PR.
 
 ## License
 
-[MIT](LICENSE) — research / educational use.
+[MIT](LICENSE) research / educational use.
 
 ---
 
