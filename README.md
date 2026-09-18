@@ -9,11 +9,8 @@ cybersecurity framework.
 ![OWASP Top 10 2021](https://img.shields.io/badge/OWASP%20Top%2010-2021%20mapped-orange)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
-LEO Sentinel pulls publicly available Low Earth Orbit catalog data,
-classifies every object by mission type, operator, size, and lifecycle
-status, and writes structured CSV/JSON output — built as the supporting
-tool for the paper *"Hardening the High Frontier: LEO SmallSat
-Cybersecurity."*
+LEO Sentinel pulls publicly available Low Earth Orbit catalog data, classifies every object by mission type, operator, size, and lifecycle
+status, and writes structured CSV/JSON output built as the supporting tool for the paper *"Hardening the High Frontier: LEO SmallSat Cybersecurity."*
 
 <img width="1770" height="741" alt="LEO Sentinel CSV output in a spreadsheet, showing classified mission types, countries, and orbital parameters" src="https://github.com/user-attachments/assets/024ddb36-770c-41d9-820a-5c58b1da9803" />
 
@@ -41,50 +38,31 @@ Cybersecurity."*
 
 ## Why this exists
 
-Anyone doing SDR-based signals research or space-security work starts with
-the same question: *what's actually up there, and what am I looking at?*
-Raw SATCAT data answers that with catalog numbers and orbital elements —
-useful, but not actionable on its own. LEO Sentinel adds the layer between
-"here's a TLE" and "here's a prioritized research target": mission
-classification, operator attribution, an illustrative threat-tier estimate
-grounded in published Aerospace Corporation research, and (optionally)
-known downlink frequency data from SatNOGS.
+Anyone doing SDR-based signals research or space-security work starts with the same question: *what's actually up there, and what am I looking at?*
+Raw SATCAT data answers that with catalog numbers and orbital elements useful, but not actionable on its own. LEO Sentinel adds the layer between
+"here's a TLE" and "here's a prioritized research target": mission classification, operator attribution, an illustrative threat-tier estimate
+grounded in published Aerospace Corporation research, and (optionally) known downlink frequency data from SatNOGS.
 
-It's a **passive aggregation tool**. It only reads publicly published
-catalog data — see [Legal & ethical use](#legal--ethical-use).
+It's a **passive aggregation tool**. It only reads publicly published catalog data — see [Legal & ethical use](#legal--ethical-use).
 
 ## Features
 
-- **Multi-source aggregation** — [CelesTrak](https://celestrak.org) SATCAT
-  (primary, no auth), optional [Space-Track.org](https://www.space-track.org)
-  supplement, optional [SatNOGS DB](https://db.satnogs.org) transmitter
-  enrichment.
-- **Mission classification engine** — a ~60-pattern, ordered regex
-  taxonomy sorting objects into 18 classes (GNSS, weather, megaconstellation
-  comms, military SATCOM, classified military, space stations, scientific,
-  amateur radio, debris, and more). Run `--list-mission-classes` to print
+- **Multi-source aggregation** — [CelesTrak](https://celestrak.org) SATCAT (primary, no auth), optional [Space-Track.org](https://www.space-track.org)
+  supplement, optional [SatNOGS DB](https://db.satnogs.org) transmitter enrichment.
+- **Mission classification engine** — a ~60-pattern, ordered regex taxonomy sorting objects into 18 classes (GNSS, weather, megaconstellation
+  comms, military SATCOM, classified military, space stations, scientific, amateur radio, debris, and more). Run `--list-mission-classes` to print
   the full taxonomy with no network call.
-- **Illustrative threat-tier heuristic** — maps each mission class to a
-  band on the Bailey/Aerospace Corporation Tier I–VII adversary model
-  (TOR-2021-01333-REV A), grounded in open-source incident history (e.g.
-  Viasat KA-SAT, 2022). Explicitly labeled as a prioritization aid, never
-  as intelligence.
-- **Lifecycle & size classification** — flags newly-launched and
-  recently-decayed objects from `LAUNCH_DATE`/`DECAY_DATE`, and buckets
+- **Illustrative threat-tier heuristic** — maps each mission class to a band on the Bailey/Aerospace Corporation Tier I–VII adversary model
+  (TOR-2021-01333-REV A), grounded in open-source incident history (e.g. Viasat KA-SAT, 2022). Explicitly labeled as a prioritization aid, never as intelligence.
+- **Lifecycle & size classification** — flags newly-launched and recently-decayed objects from `LAUNCH_DATE`/`DECAY_DATE`, and buckets
   objects by radar cross-section into a coarse size class.
-- **Cross-run anomaly triage** (`--diff-previous`) — diffs this run's
-  catalog against the previous snapshot to surface new objects, vanished
-  objects, and orbital-parameter shifts worth a human look. Documented as
-  coarse triage, not confirmed maneuver detection.
-- **Frequency enrichment** (`--enrich-frequencies`) — cross-references
-  SatNOGS DB for known downlink frequency, modulation, transmitter count,
+- **Cross-run anomaly triage** (`--diff-previous`) — diffs this run's catalog against the previous snapshot to surface new objects, vanished
+  objects, and orbital-parameter shifts worth a human look. Documented as coarse triage, not confirmed maneuver detection.
+- **Frequency enrichment** (`--enrich-frequencies`) — cross-references SatNOGS DB for known downlink frequency, modulation, transmitter count,
   and ITU frequency-violation flags.
-- **Resilient by design** — disk caching, exponential-backoff retries, a
-  `--diagnose` mode that shows exactly what a server sent back when JSON
-  parsing fails (block page, rate limit, captive portal, WAF), and
-  graceful per-source degradation (one source failing doesn't kill the run).
-- **OWASP Top 10 (2021) mapped** — see
-  [Security architecture](#security-architecture-owasp-top-10-2021).
+- **Resilient by design** — disk caching, exponential-backoff retries, a `--diagnose` mode that shows exactly what a server sent back when JSON
+  parsing fails (block page, rate limit, captive portal, WAF), and graceful per-source degradation (one source failing doesn't kill the run).
+- **OWASP Top 10 (2021) mapped** — see [Security architecture](#security-architecture-owasp-top-10-2021).
 
 ## Quickstart
 
@@ -92,6 +70,7 @@ catalog data — see [Legal & ethical use](#legal--ethical-use).
 git clone https://github.com/RisingCyber/LEO_Sentinel.git
 cd LEO_Sentinel
 pip install -r requirements.txt
+
 python3 leo_sentinel.py --format both --summary
 ```
 
@@ -146,7 +125,7 @@ so they never land in shell history):
 ```bash
 export SPACETRACK_USER="you@example.com"
 export SPACETRACK_PASS="..."
-python3 leo_sentinel.py --format both
+python3 leo_sentinel.py --format both --summary
 ```
 
 ### Examples
