@@ -218,7 +218,7 @@ framework — the publicly available body of knowledge on how spacecraft can be 
 | [Space-Track.org](https://www.space-track.org) | Free account (optional) | [Space-Track user agreement](https://www.space-track.org/documentation#/agreement) | Supplemental catalog |
 | [SatNOGS DB](https://db.satnogs.org) | None | CC-BY-SA, community-maintained | Downlink frequency/mode enrichment |
 
-SatNOGS DB is explicitly crowd-sourced per its own documentation — treat `--enrich-frequencies` output as a research lead, not authoritative ground truth.
+SatNOGS DB is explicitly crowd-sourced per its own documentation treat `--enrich-frequencies` output as a research lead, not authoritative ground truth.
 
 ## Testing & CI
 
@@ -227,7 +227,7 @@ pip install -r requirements-dev.txt
 pytest -v
 ```
 
-The suite covers the pure, offline-computable logic — mission classification, orbital/size/lifecycle resolution, and the
+The suite covers the pure, offline-computable logic, mission classification, orbital/size/lifecycle resolution, and the
 sanitization/SSRF-allowlist helpers behind the OWASP controls above. It does **not** hit live network endpoints; use `--diagnose` against the real
 APIs for that. GitHub Actions runs this suite on Python 3.9–3.12 for every push and pull request (`.github/workflows/ci.yml`). An optional
 `workflow_dispatch` job (`.github/workflows/snapshot.yml`) runs a real collection and uploads the result as a downloadable artifact.
