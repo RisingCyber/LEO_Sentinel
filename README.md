@@ -3,7 +3,7 @@
 LEO satellite aggregator and mission
 classifier for signals and space-security research, built for the reconnaissance stage of the [SPARTA](https://sparta.aerospace.org) space cybersecurity framework.
 
-[![CI](https://github.com/RisingCyber/LEO_Sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/RisingCyber/LEO_Sentinel/actions/workflows/ci.yml)
+![CI](https://github.com/RisingCyber/LEO_Sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/RisingCyber/LEO_Sentinel/actions/workflows/ci.yml)
 ![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![OWASP Top 10 2021](https://img.shields.io/badge/OWASP%20Top%2010-2021%20mapped-orange)
