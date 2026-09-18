@@ -249,12 +249,12 @@ This tool performs **passive aggregation** of publicly available orbital data on
 disrupt satellite operations. Such actions violate 47 U.S.C. § 333, the ITU Radio Regulations, and equivalent laws in Australia (Radiocommunications
 Act 1992) and globally.
 
-The `illustrative_threat_tier` field is a research prioritization heuristic derived from published, unclassified Aerospace Corporation work — it is
+The `illustrative_threat_tier` field is a research prioritization heuristic derived from published, unclassified Aerospace Corporation work, it is
 not intelligence, not satellite-specific, and not a substitute for a real risk assessment.
 
 ## Contributing
 
-Issues and pull requests are welcome — particularly around new mission classification patterns, additional open data sources, and the roadmap
+Issues and pull requests are welcome, particularly around new mission classification patterns, additional open data sources, and the roadmap
 items above. Please run `pytest -v` before submitting a PR.
 
 ## License
