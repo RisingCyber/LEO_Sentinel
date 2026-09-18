@@ -43,7 +43,7 @@ Raw SATCAT data answers that with catalog numbers and orbital elements useful, b
 "here's a TLE" and "here's a prioritized research target": mission classification, operator attribution, an illustrative threat-tier estimate
 grounded in published Aerospace Corporation research, and (optionally) known downlink frequency data from SatNOGS.
 
-It's a **passive aggregation tool**. It only reads publicly published catalog data — see [Legal & ethical use](#legal--ethical-use).
+It's a **passive aggregation tool**. It only reads publicly published catalog data: see [Legal & ethical use](#legal--ethical-use).
 
 ## Features
 
@@ -283,4 +283,4 @@ items above. Please run `pytest -v` before submitting a PR.
 
 ---
 
-Built and maintained by [Australian Phoenix CyberOps](https://github.com/RisingCyber).
+Built and maintained by [Australian Phoenix CyberOps - **Chad!**](https://github.com/RisingCyber).
