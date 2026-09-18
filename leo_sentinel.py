@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Australian Phoenix LEO Sentinel v1.1.0
+Australian Phoenix LEO Sentinel v1.2.0
 =======================================
 LEO Satellite Aggregator & Classifier for Signals/Space Security Research
 Australian Phoenix CyberOps | Signals & Space Security Research
@@ -39,9 +39,12 @@ USAGE
 -----
     python3 leo_sentinel.py [--format {csv,json,both}] [--out-dir PATH]
                             [--no-cache] [--verbose] [--summary]
+                            [--enrich-frequencies] [--diff-previous]
+                            [--diagnose] [--list-mission-classes]
 
     Example:
         python3 leo_sentinel.py --format both --summary
+        python3 leo_sentinel.py --list-mission-classes
 
 ENVIRONMENT VARIABLES (Optional — Space-Track.org integration)
 ---------------------------------------------------------------
@@ -95,15 +98,63 @@ except ImportError:
 #  CONSTANTS
 # ─────────────────────────────────────────────────────────────────────────────
 
-VERSION     = "1.1.0"
+VERSION     = "1.2.0"
 TOOL_NAME   = "Australian Phoenix LEO Sentinel"
-TOOL_BANNER = f"""
-╔══════════════════════════════════════════════════════════════════╗
-         {TOOL_NAME} v{VERSION}                     
-   LEO Satellite Aggregator & Classifier                          
-   Australian Phoenix CyberOps | https://github.com/RisingCyber      
-╚══════════════════════════════════════════════════════════════════╝
-"""
+
+# ─── Terminal styling ─────────────────────────────────────────────────────────
+#  Colour is opt-out, not opt-in: enabled only when stdout is a real terminal,
+#  disabled for pipes/redirects/CI logs, and always disabled if NO_COLOR is
+#  set (https://no-color.org). This never touches logging output — only the
+#  banner and --summary table below are styled. FORCE_COLOR forces it on
+#  (e.g. for CI log viewers that render ANSI).
+def _color_enabled() -> bool:
+    if os.environ.get("NO_COLOR") is not None:
+        return False
+    if os.environ.get("FORCE_COLOR") is not None:
+        return True
+    return sys.stdout.isatty()
+
+
+_USE_COLOR: bool = _color_enabled()
+
+
+class _Ansi:
+    RESET  = "\033[0m"  if _USE_COLOR else ""
+    BOLD   = "\033[1m"  if _USE_COLOR else ""
+    DIM    = "\033[2m"  if _USE_COLOR else ""
+    CYAN   = "\033[36m" if _USE_COLOR else ""
+    ORANGE = "\033[38;5;208m" if _USE_COLOR else ""
+    GREEN  = "\033[32m" if _USE_COLOR else ""
+
+
+def _build_banner() -> str:
+    """Build a box-drawn banner, padded to a fixed width regardless of
+    how long TOOL_NAME/VERSION happen to be, so it never misaligns."""
+    width = 70
+    rule_top = "╔" + "═" * (width - 2) + "╗"
+    rule_mid = "╠" + "═" * (width - 2) + "╣"
+    rule_bot = "╚" + "═" * (width - 2) + "╝"
+
+    def centered(text: str) -> str:
+        pad = max(width - 4 - len(text), 0)
+        left = pad // 2
+        right = pad - left
+        return f"║ {' ' * left}{text}{' ' * right} ║"
+
+    lines = [
+        rule_top,
+        centered(f"{TOOL_NAME} v{VERSION}"),
+        centered("LEO Satellite Aggregator & Classifier"),
+        rule_mid,
+        centered("Signals & Space Security Research"),
+        centered("Australian Phoenix CyberOps  ·  github.com/RisingCyber"),
+        rule_bot,
+    ]
+    body = "\n".join(lines)
+    return f"\n{_Ansi.ORANGE}{_Ansi.BOLD}{body}{_Ansi.RESET}\n"
+
+
+TOOL_BANNER = _build_banner()
 
 # ── LEO altitude thresholds (km) ─────────────────────────────────────────────
 LEO_PERIGEE_MIN_KM: float = 150.0
@@ -738,7 +789,7 @@ def build_http_session(user_agent: Optional[str] = None) -> requests.Session:
     session.mount("https://", adapter)
 
     session.headers.update({
-        "User-Agent": user_agent or f"{TOOL_NAME}/{VERSION} (+https://https://github.com/RisingCyber; research tool)",
+        "User-Agent": user_agent or f"{TOOL_NAME}/{VERSION} (+https://github.com/RisingCyber; research tool)",
         "Accept": "application/json, text/plain",
         "Accept-Encoding": "gzip, deflate",
     })
@@ -1631,20 +1682,21 @@ def print_summary(records: List[Dict], logger: logging.Logger) -> None:
         cc = rec.get("country_name", "Unknown")
         country_counts[cc] = country_counts.get(cc, 0) + 1
 
-    print("\n" + "=" * 66)
-    print(f"  {TOOL_NAME} — LEO Satellite Summary")
-    print("=" * 66)
-    print(f"  Total LEO objects classified: {len(records)}")
+    rule = f"{_Ansi.DIM}{'=' * 66}{_Ansi.RESET}"
+    print(f"\n{rule}")
+    print(f"  {_Ansi.BOLD}{TOOL_NAME} — LEO Satellite Summary{_Ansi.RESET}")
+    print(rule)
+    print(f"  Total LEO objects classified: {_Ansi.BOLD}{len(records)}{_Ansi.RESET}")
     print()
-    print("  MISSION CLASSES:")
+    print(f"  {_Ansi.CYAN}MISSION CLASSES:{_Ansi.RESET}")
     for cls, count in sorted(class_counts.items(), key=lambda x: -x[1]):
-        bar = "█" * min(count // 10, 30)
+        bar = f"{_Ansi.ORANGE}{'█' * min(count // 10, 30)}{_Ansi.RESET}"
         print(f"    {cls:<28} {count:>6}  {bar}")
     print()
-    print("  TOP 10 COUNTRIES / OPERATORS:")
+    print(f"  {_Ansi.CYAN}TOP 10 COUNTRIES / OPERATORS:{_Ansi.RESET}")
     for country, count in sorted(country_counts.items(), key=lambda x: -x[1])[:10]:
         print(f"    {country:<35} {count:>6}")
-    print("=" * 66 + "\n")
+    print(rule + "\n")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1911,11 +1963,56 @@ def build_arg_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--list-mission-classes",
+        dest="list_mission_classes",
+        action="store_true",
+        default=False,
+        help=(
+            "Print every mission_class label the classifier can assign, "
+            "grouped with its human-readable description and the "
+            "illustrative threat tier it maps to, then exit. No network "
+            "access performed."
+        ),
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"{TOOL_NAME} v{VERSION}",
     )
     return parser
+
+
+def list_mission_classes() -> int:
+    """
+    Print the full mission-classification taxonomy: every distinct
+    mission_class label the pattern engine can produce, one representative
+    description, and the illustrative threat tier it resolves to. Pure
+    local introspection of MISSION_PATTERNS / THREAT_TIER_BY_MISSION_CLASS
+    — no network access, safe to run anytime.
+    """
+    seen: Dict[str, str] = {}
+    for _pattern, label, desc in MISSION_PATTERNS:
+        seen.setdefault(label, desc)
+    # Non-pattern-derived classes assigned elsewhere in classify_mission()/
+    # process_satcat_records() — included so the list is exhaustive.
+    seen.setdefault("ROCKET_BODY", "Spent Rocket Body (via OBJECT_TYPE)")
+    seen.setdefault("DEBRIS", "Tracked Debris Object (via OBJECT_TYPE or name)")
+    seen.setdefault("UNKNOWN_PAYLOAD", "Unclassified Payload")
+    seen.setdefault("UNKNOWN", "Object Type Unknown")
+
+    print(f"\n{_Ansi.BOLD}{TOOL_NAME} — Mission Classification Taxonomy{_Ansi.RESET}")
+    print(f"{len(seen)} classes · matched in order, first pattern hit wins\n")
+    header = f"  {'MISSION_CLASS':<24} {'DESCRIPTION':<42} THREAT TIER"
+    print(f"{_Ansi.CYAN}{header}{_Ansi.RESET}")
+    print(f"{_Ansi.DIM}{'-' * len(header)}{_Ansi.RESET}")
+    for label in sorted(seen):
+        tier = THREAT_TIER_BY_MISSION_CLASS.get(label, THREAT_TIER_DEFAULT)
+        print(f"  {label:<24} {seen[label]:<42} {tier}")
+    print(
+        f"\n{_Ansi.DIM}Threat tiers are an illustrative prioritisation aid "
+        f"(Bailey/Aerospace Corp Tier I-VII model), not intelligence.{_Ansi.RESET}\n"
+    )
+    return 0
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -2058,6 +2155,10 @@ def main() -> int:
     logger = configure_logging(verbose=args.verbose, log_dir=out_dir)
     logger.info("Starting %s v%s", TOOL_NAME, VERSION)
     logger.info("Output directory: %s", out_dir.resolve())
+
+    # ── Taxonomy listing: pure local introspection, no network, then exit ────
+    if args.list_mission_classes:
+        return list_mission_classes()
 
     # ── HTTP session ──────────────────────────────────────────────────────────
     session = build_http_session(user_agent=args.user_agent)
